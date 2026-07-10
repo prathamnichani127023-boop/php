@@ -1,36 +1,70 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Login page </title>
-</head>
-<body bg="blue">
-    <center>
-    <h1>Student Login</h1>
-    </center>
-    <form action ="welcome.php" method ="post">
-        User name : <input type="text" name ="username"><br><br>
-        Password : <input type="password" name ="password"><br><br>
-        <input type="Submit">
-    </form>
-</body>
-</html>
-
 <?php
-    if($_SERVER["REQUEST_METHOD"]=='POST')
+include("db.php");
+
+$message = "";
+
+if(isset($_POST['login']))
+{
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+
+    $sql = "SELECT * FROM users WHERE username='$username' AND password='$password'";
+    $result = mysqli_query($conn, $sql);
+
+    if(mysqli_num_rows($result) > 0)
     {
-        $username = $_POST['username'];
-        $password = $_POST['password'];
-    
-        if($username == "nipunsinh" && $password == "1234")
-        {
-            header("Location: welcome.php");
-        }
-        else
-        {
-            echo " Login Failed";
-        }
+        $message = "Login Successful";
     }
+    else
+    {
+        $message = "Invalid Username or Password";
+    }
+}
 ?>
 
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login Page</title>
+</head>
+<body>
+
+<center>
+
+<h2>Login Form</h2>
+
+<?php
+if($message != "")
+{
+    echo "<h3>$message</h3>";
+}
+?>
+
+<form method="post">
+
+    <table border="1" cellpadding="10">
+
+        <tr>
+            <td>Username</td>
+            <td><input type="text" name="username" required></td>
+        </tr>
+
+        <tr>
+            <td>Password</td>
+            <td><input type="password" name="password" required></td>
+        </tr>
+
+        <tr>
+            <td colspan="2" align="center">
+                <input type="submit" name="login" value="Login">
+            </td>
+        </tr>
+
+    </table>
+
+</form>
+
+</center>
+
+</body>
+</html>
